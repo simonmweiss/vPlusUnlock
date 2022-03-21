@@ -1,0 +1,11 @@
+.vodl-external-post__paywall-section{
+  display: none !important;
+}
+
+.vodl-paywall{
+  display: none !important;
+}
+
+.vodl-region-article__premium-content {
+  display: block !important;
+}
