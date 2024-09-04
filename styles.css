@@ -9,3 +9,11 @@
 .vodl-region-article__premium-content {
   display: block !important;
 }
+
+.tp-modal {
+  display: none !important;
+}
+
+.tp-backdrop.tp-active {
+  display: none !important;
+}
