@@ -1,4 +1,4 @@
-window.addEventListener('load', function () {
+window.addEventListener('DOMContentLoaded', function () {
     var externalPostDataNode = document.getElementById("externalPostDataNode")
     if (externalPostDataNode) {
         unlockVPlus(externalPostDataNode);
