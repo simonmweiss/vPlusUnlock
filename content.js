@@ -80,7 +80,6 @@ function addComments() {
             comments.children[0].remove();
         }
         var postId = window.location.href.split('/')[4];
-        console.log(postId)
         fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId)
             .then((response) => response.json())
             .then((json) => {
