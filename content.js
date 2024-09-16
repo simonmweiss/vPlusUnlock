@@ -1,10 +1,8 @@
-window.addEventListener('DOMContentLoaded', function () {
-    var externalPostDataNode = document.getElementById("externalPostDataNode")
-    if (externalPostDataNode) {
-        unlockVPlus(externalPostDataNode);
-    }
-    addComments();
-})
+var externalPostDataNode = document.getElementById("externalPostDataNode")
+if (externalPostDataNode) {
+    unlockVPlus(externalPostDataNode);
+}
+addComments();
 
 function unlockVPlus(externalPostDataNode) {
     var content = JSON.parse(externalPostDataNode.innerHTML);
@@ -69,24 +67,30 @@ function calculatePaywallPosition(paywallPosition, blocks) {
 }
 
 function addComments() {
-    var commentElement = document.getElementById("comments");
-    commentElement.parentElement.hidden = false;
-    var commentsWrapper = commentElement.children[1].children[0];
-    var comments = commentsWrapper.children[2];
-    commentsWrapper.children[1].remove();
-    comments.children[1].remove();
-    comments.children[0].remove();
-    var postId = window.location.href.split('/')[4];
-    console.log(postId)
-    fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId)
-        .then((response) => response.json())
-        .then((json) => {
-            var commentsString = "";
-            json.comments.forEach(comment => {
-                commentsString += getCommentTemplate(comment);
-            });
-            comments.innerHTML = commentsString;
-        });
+    try {
+        var commentElement = document.getElementById("comments");
+        commentElement.parentElement.hidden = false;
+        var commentsWrapper = commentElement.children[1].children[0];
+        var comments = commentsWrapper.children[2];
+        commentsWrapper.children[1].remove();
+        if(comments.length > 2) {
+            comments.children[1].remove();
+            comments.children[0].remove();
+            var postId = window.location.href.split('/')[4];
+            console.log(postId)
+            fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId)
+                .then((response) => response.json())
+                .then((json) => {
+                    var commentsString = "";
+                    json.comments.forEach(comment => {
+                        commentsString += getCommentTemplate(comment);
+                    });
+                    comments.innerHTML = commentsString;
+                });
+        }
+    } catch (error) {
+        setTimeout(addComments, 3000);
+    }
 
 }
 
