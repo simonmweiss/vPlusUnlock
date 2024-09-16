@@ -73,25 +73,26 @@ function addComments() {
         var commentsWrapper = commentElement.children[1].children[0];
         var comments = commentsWrapper.children[2];
         commentsWrapper.children[1].remove();
-        if(comments.length > 2) {
+        if(comments.children[1]) {
             comments.children[1].remove();
-            comments.children[0].remove();
-            var postId = window.location.href.split('/')[4];
-            console.log(postId)
-            fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId)
-                .then((response) => response.json())
-                .then((json) => {
-                    var commentsString = "";
-                    json.comments.forEach(comment => {
-                        commentsString += getCommentTemplate(comment);
-                    });
-                    comments.innerHTML = commentsString;
-                });
         }
+        if(comments.children[0]) {
+            comments.children[0].remove();
+        }
+        var postId = window.location.href.split('/')[4];
+        console.log(postId)
+        fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId)
+            .then((response) => response.json())
+            .then((json) => {
+                var commentsString = "";
+                json.comments.forEach(comment => {
+                    commentsString += getCommentTemplate(comment);
+                });
+                comments.innerHTML = commentsString;
+            });
     } catch (error) {
         setTimeout(addComments, 3000);
     }
-
 }
 
 function getCommentTemplate(comment) {
