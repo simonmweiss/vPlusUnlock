@@ -71,12 +71,15 @@ function addComments() {
         var commentElement = document.getElementById("comments");
         commentElement.parentElement.hidden = false;
         var commentsWrapper = commentElement.children[1].children[0];
+        if (commentsBlocked(commentsWrapper)) {
+            addCommentsElement(commentsWrapper);
+        }
         var comments = commentsWrapper.children[2];
         commentsWrapper.children[1].remove();
-        if(comments.children[1]) {
+        if (comments.children[1]) {
             comments.children[1].remove();
         }
-        if(comments.children[0]) {
+        if (comments.children[0]) {
             comments.children[0].remove();
         }
         var postId = window.location.href.split('/')[4];
@@ -92,6 +95,26 @@ function addComments() {
     } catch (error) {
         setTimeout(addComments, 3000);
     }
+}
+
+function commentsBlocked(commentsWrapper) {
+    if (commentsWrapper.innerHTML.includes('Die Kommentarsektion ist für diesen Artikel geschlossen.')) {
+        if (!commentsWrapper.innerHTML.includes('V+ Unlock')) {
+            commentsWrapper.children[0].children[1].innerHTML += ' Mit V+ Unlock können Sie die bisher verfassten Kommentare trotzdem lesen:';
+        }
+        return true;
+    }
+    return false;
+}
+
+function addCommentsElement(commentsWrapper) {
+    commentsWrapper.appendChild(document.createElement("div"));
+    var newComments = document.createElement("div");
+    newComments.classList.add("flex");
+    newComments.classList.add("flex-col");
+    newComments.classList.add("mt-12");
+    newComments.classList.add("gap-y-10");
+    commentsWrapper.appendChild(newComments);
 }
 
 function getCommentTemplate(comment) {
