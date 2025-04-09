@@ -7,7 +7,8 @@ addComments();
 function unlockVPlus(externalPostDataNode) {
     var content = JSON.parse(externalPostDataNode.innerHTML);
     var blocks = content.content.data.post.blocks;
-    var paywallPos = calculatePaywallPosition(content.paywall_position, blocks);
+    var paywall_position = content.paywall_position || 0;
+    var paywallPos = calculatePaywallPosition(paywall_position, blocks);
     var paywalledBlocks = blocks.slice(paywallPos);
     var paywalledContent = document.getElementsByClassName("paywalled-content")[0];
 
@@ -37,33 +38,24 @@ function getFigureHtml(picDetails) {
 }
 
 function calculatePaywallPosition(paywallPosition, blocks) {
-    let removeContent = false,
-        result = 4;
 
-    visibleBlocks = blocks.filter(function (block) {
-        if ('Author' === block.t) {
-            return block;
+    let visibleBlocks = blocks.filter(function (block, index) {
+        if ("Author" === block.t || "CommentAuthor" === block.t) {
+            return true;
         }
 
         let content = block.h;
         if (content.match(/russmedia-nordstern-lead/i)) {
-            removeContent = true;
-            return block;
+            return true;
         }
 
-        if (removeContent) {
-            return;
+        if (content.match(/wp-block-image/i) && 0 === index) {
+            return true;
         }
 
-        return block;
+        return false;
     });
-
-    if (!removeContent) {
-        return result;
-    }
-
-    result = visibleBlocks.length + paywallPosition;
-    return result;
+    return visibleBlocks.length + paywallPosition;
 }
 
 function addComments() {
