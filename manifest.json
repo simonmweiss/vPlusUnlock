@@ -13,7 +13,7 @@
       }
    ],
    "description": "V+",
-   "manifest_version": 2,
+   "manifest_version": 3,
    "name": "V+ Unlock",
-   "version": "1.3.0"
+   "version": "1.4.0"
 }
