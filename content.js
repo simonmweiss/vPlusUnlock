@@ -1,4 +1,7 @@
 var externalPostDataNode = document.getElementById("externalPostDataNode")
+if(!externalPostDataNode) {
+    externalPostDataNode = document.getElementById("newExternalPostDataNode")
+}
 if (externalPostDataNode) {
     unlockVPlus(externalPostDataNode);
 }
