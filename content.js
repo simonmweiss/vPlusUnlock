@@ -78,7 +78,10 @@ function addComments() {
             comments.children[0].remove();
         }
         var postId = window.location.href.split('/')[4];
-        fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId + "&rnd=1")
+        if(postId.includes('?')) {
+            postId = postId.substring(0, postId.indexOf('?'))
+        }
+        fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId + "&rnd="+Math.floor(Math.random() * 10000))
             .then((response) => response.json())
             .then((json) => {
                 var commentsString = "";
