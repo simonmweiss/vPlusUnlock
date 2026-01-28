@@ -1,8 +1,8 @@
-.vodl-external-post__paywall-section{
+.vodl-external-post__paywall-section {
   display: none !important;
 }
 
-.vodl-paywall{
+.vodl-paywall {
   display: none !important;
 }
 
@@ -15,5 +15,9 @@
 }
 
 .tp-backdrop.tp-active {
+  display: none !important;
+}
+
+#comments section>div:nth-child(2) {
   display: none !important;
 }

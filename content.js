@@ -1,5 +1,5 @@
 var externalPostDataNode = document.getElementById("externalPostDataNode")
-if(!externalPostDataNode) {
+if (!externalPostDataNode) {
     externalPostDataNode = document.getElementById("newExternalPostDataNode")
 }
 if (externalPostDataNode) {
@@ -65,12 +65,14 @@ function addComments() {
     try {
         var commentElement = document.getElementById("comments");
         commentElement.parentElement.hidden = false;
-        var commentsWrapper = commentElement.children[1].children[0];
+        var commentsWrapper = commentElement.children[0].children[2];
         if (commentsBlocked(commentsWrapper)) {
             addCommentsElement(commentsWrapper);
         }
-        var comments = commentsWrapper.children[2];
-        commentsWrapper.children[1].remove();
+        var comments = commentsWrapper;
+        if (comments.children[2]) {
+            comments.children[2].remove();
+        }
         if (comments.children[1]) {
             comments.children[1].remove();
         }
@@ -78,10 +80,10 @@ function addComments() {
             comments.children[0].remove();
         }
         var postId = window.location.href.split('/')[4];
-        if(postId.includes('?')) {
+        if (postId.includes('?')) {
             postId = postId.substring(0, postId.indexOf('?'))
         }
-        fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId + "&rnd="+Math.floor(Math.random() * 10000))
+        fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId + "&rnd=" + Math.floor(Math.random() * 10000))
             .then((response) => response.json())
             .then((json) => {
                 var commentsString = "";
@@ -92,6 +94,7 @@ function addComments() {
             });
     } catch (error) {
         setTimeout(addComments, 3000);
+        console.error(error);
     }
 }
 
