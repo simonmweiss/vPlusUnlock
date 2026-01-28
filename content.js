@@ -1,64 +1,60 @@
-var externalPostDataNode = document.getElementById("externalPostDataNode")
-if (!externalPostDataNode) {
-    externalPostDataNode = document.getElementById("newExternalPostDataNode")
+
+var isPaywalled = document.getElementsByClassName("vodl-paywall")
+var postId = window.location.href.split('/')[4];
+if (postId.includes('?')) {
+    postId = postId.substring(0, postId.indexOf('?'))
 }
-if (externalPostDataNode) {
-    unlockVPlus(externalPostDataNode);
+if (isPaywalled) {
+    var contentWrapper = document.getElementsByClassName("paywalled-content")[0];
+    setInterval(function () {
+        if (contentWrapper.children.length == 0) {
+            unlockVPlus(contentWrapper);
+
+        }
+    }, 1000);
 }
 addComments();
 
-function unlockVPlus(externalPostDataNode) {
-    var content = JSON.parse(externalPostDataNode.innerHTML);
-    var blocks = content.content.data.post.blocks;
-    var paywall_position = content.paywall_position || 0;
-    var paywallPos = calculatePaywallPosition(paywall_position, blocks);
-    var paywalledBlocks = blocks.slice(paywallPos);
-    var paywalledContent = document.getElementsByClassName("paywalled-content")[0];
 
-    for (const block of paywalledBlocks) {
-        if (block.t == "DCXImage") {
-            var picDetails = JSON.parse(block.a[0].value)[0];
-            let div = document.createElement('div');
-            div.classList.add('entry-content');
-            div.classList.add('dcx-image');
-            let figure = document.createElement('figure');
-            figure.classList.add('wp-block-image');
-            figure.classList.add('relative');
-            figure.innerHTML = getFigureHtml(picDetails);
-            div.appendChild(figure);
-            paywalledContent.appendChild(div);
-        } else if (block.t == "HtmlBlock") {
-            let div = document.createElement('div');
-            div.classList.add('entry-content');
-            div.innerHTML = block.h;
-            paywalledContent.appendChild(div);
-        }
+function unlockVPlus(contentWrapper) {
+    var contentString = document.getElementById("__NUXT_DATA__").innerHTML;
+    var data = JSON.parse(contentString);
+
+    var startIndex = data.indexOf(Number(postId));
+
+    var paragraphs =
+        startIndex === -1
+            ? []
+            : data
+                .slice(startIndex + 1)
+                .filter(v => typeof v === "string" && v.startsWith("<"));
+
+    paragraphs.splice(0, 3);
+    let div = document.createElement('div');
+    div.classList.add('flex');
+    div.classList.add('flex-col');
+    div.classList.add("gap-y-8");
+    div.classList.add("md:gap-y-10");
+    contentWrapper.appendChild(div);
+
+    for (const paragraph of paragraphs) {
+        let div2 = document.createElement('div');
+        div2.classList.add('content-block--wrapper');
+        div.appendChild(div2);
+        let div3 = document.createElement('div');
+        div3.classList.add('content-block');
+        div3.innerHTML = paragraph;
+        div2.appendChild(div3);
     }
+
 }
 
-function getFigureHtml(picDetails) {
-    return "<img src=\"" + picDetails.img + "\" alt=\"" + escape(picDetails.caption) + "\" sizes=\"50vw\" srcset=\"" + picDetails.srcset + "\" class=\"wp-image-" + picDetails.id + "\"><figcaption>" + picDetails.caption + "</figcaption>";
-}
-
-function calculatePaywallPosition(paywallPosition, blocks) {
-
-    let visibleBlocks = blocks.filter(function (block, index) {
-        if ("Author" === block.t || "CommentAuthor" === block.t) {
-            return true;
-        }
-
-        let content = block.h;
-        if (content.match(/russmedia-nordstern-lead/i)) {
-            return true;
-        }
-
-        if (content.match(/wp-block-image/i) && 0 === index) {
-            return true;
-        }
-
-        return false;
-    });
-    return visibleBlocks.length + paywallPosition;
+function getPostId() {
+    var postId = window.location.href.split('/')[4];
+    if (postId.includes('?')) {
+        postId = postId.substring(0, postId.indexOf('?'))
+    }
+    return postId;
 }
 
 function addComments() {
@@ -78,10 +74,6 @@ function addComments() {
         }
         if (comments.children[0]) {
             comments.children[0].remove();
-        }
-        var postId = window.location.href.split('/')[4];
-        if (postId.includes('?')) {
-            postId = postId.substring(0, postId.indexOf('?'))
         }
         fetch("https://www.vol.at/api/nnp/get_forum?p=" + postId + "&rnd=" + Math.floor(Math.random() * 10000))
             .then((response) => response.json())
