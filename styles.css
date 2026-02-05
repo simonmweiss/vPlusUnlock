@@ -21,3 +21,7 @@
 #comments section>div:nth-child(2) {
   display: none !important;
 }
+
+body.tp-modal-open {
+  overflow: auto !important;
+}
